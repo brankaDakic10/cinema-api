@@ -11,15 +11,15 @@ class MoviesController extends Controller
 {
     public function index()
     {
-          // return Movie::all();
-          $skip = request()->input('skip', 0);
-          $take = request()->input('take', Movie::get()->count());
-          
-        if ($skip &&  $take) {
-              return Movie::skip($skip)->take($take)->get();
-          } else {
-              return Movie::all();
-          }
+        // return Movie::all();
+        $term = request()->input('term');
+        $skip = request()->input('skip', 0);
+        $take = request()->input('take', Movie::get()->count());
+        if ($term) {
+            return Movie::search($term, $skip, $take);
+        } else {
+            return Movie::skip($skip)->take($take)->get();
+        }
 
     }
      public function show($id)
