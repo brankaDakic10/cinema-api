@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Movie;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Validator;
 
 class MoviesController extends Controller
 {
@@ -20,6 +20,17 @@ class MoviesController extends Controller
     }
      public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|unique:movies',
+            'director' => 'required',
+            'duration' => 'required|numeric|between:1,500',
+            'releaseDate' => 'required|unique:movies',
+            'imageUrl' => 'url'
+        ]);
+         if ($validator->fails()) {
+            return new JsonResponse($validator->errors(), 406);
+        }
         
         $movie=new Movie();
         
@@ -33,7 +44,20 @@ class MoviesController extends Controller
         return $movie;
     }
     public function update(Request $request, $id)
-    {
+    {  
+         $validator = Validator::make($request->all(), [
+        'title' => 'required|unique:movies',
+        'director' => 'required',
+        'duration' => 'required|numeric|between:1,500',
+        'releaseDate' => 'required|unique:movies',
+        'imageUrl' => 'url'
+    ]);
+     if ($validator->fails()) {
+        return new JsonResponse($validator->errors(), 406);
+    }
+
+
+        
        $movie=Movie::find($id);
        $movie->title=$request->input('title');
        $movie->director=$request->input('director');
